@@ -50,6 +50,8 @@
     .stat-row { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 6px; }
     .event-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 0.5px solid var(--border); }
     .event-name { font-weight: 500; }
+    .event-status { font-size: 9px; background: var(--gold); color: var(--black); padding: 2px 6px; border-radius: 3px; font-weight: 600; }
+    .event-status-select { padding: 6px 8px; border: 0.5px solid var(--border); border-radius: var(--radius); background: var(--surface-1); color: var(--text-primary); font-size: 11px; cursor: pointer; }
     .event-date { font-size: 10px; color: var(--text-secondary); }
     .error { color: red; font-size: 12px; margin-top: 8px; }
     .embajador-avatar { width: 120px; height: 140px; border-radius: 8px; overflow: hidden; }
@@ -62,10 +64,19 @@
     .checkbox-item.checked { background: var(--gold); border-color: var(--gold); }
     .checkbox-item input { width: 18px; height: 18px; cursor: pointer; }
     .checkbox-item input:disabled { cursor: not-allowed; opacity: 0.6; }
+    @media (max-width: 768px) {
+      .checkbox-item { width: 28px; height: 28px; border-radius: 4px; }
+      .checkbox-item input { width: 12px; height: 12px; }
+      .checklist-row { grid-template-columns: repeat(3, 1fr); gap: 4px; }
+      .checklist-section-title { font-size: 10px; margin-bottom: 2px; }
+      .checklist-container { gap: 12px; }
+      .checklist-section { gap: 6px; }
+    }
     .horario-box { background: var(--surface-1); padding: 12px; border-radius: 8px; border-left: 3px solid var(--gold); font-size: 11px; line-height: 1.6; }
     .horario-box strong { color: var(--black); display: block; margin-bottom: 6px; }
-    .estilos-box { background: rgba(251,185,44,0.08); padding: 12px; border-radius: 8px; border-left: 3px solid var(--gold); font-size: 11px; line-height: 1.5; color: var(--text-primary); }
-    .estilos-box strong { display: block; margin-bottom: 6px; color: var(--black); }
+    .idea-box { background: var(--surface-1); padding: 12px; border-radius: 8px; border-left: 3px solid var(--gold); font-size: 11px; line-height: 1.5; margin-bottom: 8px; }
+    .idea-box strong { color: var(--black); display: block; margin-bottom: 4px; }
+    .events-info { background: rgba(251,185,44,0.1); padding: 12px; border-radius: 8px; border-left: 3px solid var(--gold); font-size: 11px; line-height: 1.6; margin-bottom: 16px; color: var(--text-primary); }
   </style>
 </head>
 <body>
@@ -87,14 +98,22 @@
   class SmartFITApp {
     constructor() {
       this.embajadoresData = [
-        { username: 'CharlySMART', nombre: 'Carlos Rocha', codigo: 'CharlySMART', password: 'CarlosSM26', avatarKey: 'charly', plantillasUrl: 'https://drive.google.com/drive/folders/1Cr5COQyj5lMPrKFxD2xtf2LxT5uauc9p?usp=drive_link' },
-        { username: 'CaroSMART', nombre: 'Carolina Zavala', codigo: 'CaroSMART', password: 'CarolinaSM26', avatarKey: 'carolina', plantillasUrl: 'https://drive.google.com/drive/folders/1hwUyRrJKEFMEyrgdoDS05YTUulPG0JeW?usp=drive_link' },
-        { username: 'MishSMART', nombre: 'Mishell Rubio', codigo: 'MishSMART', password: 'MishellSM26', avatarKey: 'mishelle', plantillasUrl: 'https://drive.google.com/drive/folders/10f5VFqtRWZajjfyZ8R5veobItKr8tJv9?usp=drive_link' },
-        { username: 'ThavSMART', nombre: 'Thavatta Acevedo', codigo: 'ThavSMART', password: 'ThavattaSM26', avatarKey: 'thavatta', plantillasUrl: 'https://drive.google.com/drive/folders/1hWelrfjtTX1-odQ6RTVdUMH-02BL2BVB?usp=sharing' },
-        { username: 'StephSMART', nombre: 'Stephany', codigo: 'StephSMART', password: 'StephanySM26', avatarKey: 'steph', plantillasUrl: 'https://drive.google.com/drive/folders/1Gb6mMf-wLcunromQNj0SWshH_ijUhUIa?usp=drive_link' },
-        { username: 'DanySMART', nombre: 'Daniela Peña', codigo: 'DanySMART', password: 'DanielaSM26', avatarKey: 'daniela', plantillasUrl: 'https://drive.google.com/drive/folders/1eoZ-5bKJAZPeYqkWhsZB8omKe3K13ZgI?usp=drive_link' },
-        { username: 'ZemmaSMART', nombre: 'Zemma', codigo: 'ZemmaSMART', password: 'GemmaZetaSM26', avatarKey: 'zemma', plantillasUrl: 'https://drive.google.com/drive/folders/1nanuZj77V1H_rFKhBreTIkYiLYq4De8l?usp=drive_link' },
-        { username: 'MontseSMART', nombre: 'Montse Argueta', codigo: 'MontseSMART', password: 'MonteSM26', avatarKey: 'montse', plantillasUrl: 'https://drive.google.com/drive/folders/1K3-YOb7MvhfNeZRydl10-rptTOHtZKGO?usp=drive_link' }
+        { username: 'CharlySMART', nombre: 'Carlos Rocha', codigo: 'CharlySMART', password: 'CarlosSM26', avatarKey: 'charly', plantillasUrl: 'https://drive.google.com/drive/folders/1Cr5COQyj5lMPrKFxD2xtf2LxT5uauc9p?usp=drive_link',
+          ideas: ['💪 Comparte tus logros de transformación corporal', '🥤 Crea contenido con tu thermo/shaker de SmartFIT mostrando tus entrenamientos', '🍎 Motiva a tu comunidad con tips de nutrición pre-entreno'] },
+        { username: 'CaroSMART', nombre: 'Carolina Zavala', codigo: 'CaroSMART', password: 'CarolinaSM26', avatarKey: 'carolina', plantillasUrl: 'https://drive.google.com/drive/folders/1hwUyRrJKEFMEyrgdoDS05YTUulPG0JeW?usp=drive_link',
+          ideas: ['🧘‍♀️ Rutinas de yoga y flexibilidad para recuperación', '🥤 El thermo/shaker de SmartFIT: tu aliado en entrenamientos intensos', '🔥 Desafío: 30 días de actividad física consistente'] },
+        { username: 'MishSMART', nombre: 'Mishell Rubio', codigo: 'MishSMART', password: 'MishellSM26', avatarKey: 'mishelle', plantillasUrl: 'https://drive.google.com/drive/folders/10f5VFqtRWZajjfyZ8R5veobItKr8tJv9?usp=drive_link',
+          ideas: ['👑 Empoderamiento femenino: entrenamientos para ganar fuerza', '🥤 Hidratación: cómo usar tu thermo/shaker de SmartFIT en tus entrenamientos', '⭐ Antes y después: historias de transformación de mujeres'] },
+        { username: 'ThavSMART', nombre: 'Thavatta Acevedo', codigo: 'ThavSMART', password: 'ThavattaSM26', avatarKey: 'thavatta', plantillasUrl: 'https://drive.google.com/drive/folders/1hWelrfjtTX1-odQ6RTVdUMH-02BL2BVB?usp=sharing',
+          ideas: ['⚡ Desafíos de fuerza: WODs (Workout of the Day)', '🥤 Nutrición post-entreno con tu thermo/shaker de SmartFIT', '🤝 Comunidad: entrena con amigos en SmartFIT'] },
+        { username: 'StephSMART', nombre: 'Stephany', codigo: 'StephSMART', password: 'StephanySM26', avatarKey: 'steph', plantillasUrl: 'https://drive.google.com/drive/folders/1Gb6mMf-wLcunromQNj0SWshH_ijUhUIa?usp=drive_link',
+          ideas: ['🎵 Cardio dance: rutinas energéticas y divertidas', '🥤 Tu thermo/shaker de SmartFIT: llevalo siempre en tus entrenamientos', '🏃‍♀️ Reto semanal: alcanza tus metas de cardio'] },
+        { username: 'DanySMART', nombre: 'Daniela Peña', codigo: 'DanySMART', password: 'DanielaSM26', avatarKey: 'daniela', plantillasUrl: 'https://drive.google.com/drive/folders/1eoZ-5bKJAZPeYqkWhsZB8omKe3K13ZgI?usp=drive_link',
+          ideas: ['🌿 Wellness integral: meditación + ejercicio + nutrición', '🥤 Prepara tus smoothies en tu thermo/shaker de SmartFIT', '⚖️ Balance vida-entrenamiento: tips para no burnout'] },
+        { username: 'ZemmaSMART', nombre: 'Zemma', codigo: 'ZemmaSMART', password: 'GemmaZetaSM26', avatarKey: 'zemma', plantillasUrl: 'https://drive.google.com/drive/folders/1nanuZj77V1H_rFKhBreTIkYiLYq4De8l?usp=drive_link',
+          ideas: ['✨ Constancia: pequeños hábitos = grandes resultados', '🥤 Con tu thermo/shaker de SmartFIT, nunca te falte hidratación', '📣 Testimonios: cambios reales de personas reales'] },
+        { username: 'MontseSMART', nombre: 'Montse Argueta', codigo: 'MontseSMART', password: 'MonteSM26', avatarKey: 'montse', plantillasUrl: 'https://drive.google.com/drive/folders/1K3-YOb7MvhfNeZRydl10-rptTOHtZKGO?usp=drive_link',
+          ideas: ['🚀 Transformación: tu primer mes en SmartFIT', '🥤 Hidratación deportiva: usa tu thermo/shaker de SmartFIT', '🎯 Logros: celebra cada paso en tu viaje fitness'] }
       ];
       this.state = { currentUser: null, ambajadores: [], eventos: [], view: 'login', loginType: 'embajador' };
       this.init();
@@ -112,7 +131,7 @@
       this.state.ambajadores = this.embajadoresData.map(emb => {
         const existing = existingData?.ambajadores?.find(e => e.username === emb.username);
         return {
-          username: emb.username, nombre: emb.nombre, codigo: emb.codigo, password: emb.password, avatarKey: emb.avatarKey, plantillasUrl: emb.plantillasUrl,
+          username: emb.username, nombre: emb.nombre, codigo: emb.codigo, password: emb.password, avatarKey: emb.avatarKey, plantillasUrl: emb.plantillasUrl, ideas: emb.ideas,
           inscritos: existing?.inscritos || 0, reels_10k: existing?.reels_10k || 0, posts_1k: existing?.posts_1k || 0,
           testimoniales: existing?.testimoniales || 0,
           reels: existing?.reels || [false, false],
@@ -123,9 +142,9 @@
         };
       });
       this.state.eventos = existingData?.eventos || [
-        { id: 1, nombre: 'Carrera Santander', fecha: '2024-08-10', tipo: 'Carrera', reservados: [] },
-        { id: 2, nombre: 'Activación Centro', fecha: '2024-08-25', tipo: 'Activación', reservados: [] },
-        { id: 3, nombre: 'Torneo Voleibol', fecha: '2024-09-05', tipo: 'Evento', reservados: [] }
+        { id: 1, nombre: 'Carrera Mazahua', fecha: '2026-08-02', tipo: 'Carrera', estado: 'Ejemplo - Por Confirmar', reservados: [] },
+        { id: 2, nombre: 'Torneo de Voleibol', fecha: '2026-08-23', tipo: 'Torneo', estado: 'Ejemplo - Por Confirmar', reservados: [] },
+        { id: 3, nombre: 'Activación Centro Comercial', fecha: '2026-09-15', tipo: 'Activación', estado: 'Ejemplo - Por Confirmar', reservados: [] }
       ];
       this.save();
     }
@@ -155,7 +174,7 @@
           <div class="checklist-section-title">📱 HISTORIAS (24 - 8 semanas × 3)</div>`;
       
       for (let week = 0; week < 8; week++) {
-        html += `<div style="margin-top: 8px; font-size: 10px; color: var(--text-secondary);">Semana ${week + 1}</div><div class="checklist-row">`;
+        html += `<div style="margin-top: 4px; font-size: 9px; color: var(--text-secondary);">Semana ${week + 1}</div><div class="checklist-row">`;
         for (let day = 0; day < 3; day++) {
           const idx = week * 3 + day;
           const checked = emb.historias[idx] ? 'checked' : '';
@@ -174,18 +193,7 @@
               <input type="checkbox" class="post-fijo-check" ${emb.post_fijo ? 'checked' : ''} ${isAdmin ? '' : 'disabled'}>
             </div>
           </div>
-        </div>
-        <div class="checklist-section">
-          <div class="checklist-section-title">🏢 VISITAS MENSUALES (2)</div>
-          <div class="checklist-row">`;
-      const monthLabels = ['Jul-Ago', 'Ago-Sep'];
-      for (let i = 0; i < 2; i++) {
-        const checked = emb.visitas_mensuales[i] ? 'checked' : '';
-        html += `<div class="checkbox-item ${checked}" title="${monthLabels[i]}">
-          <input type="checkbox" class="visita-check" data-idx="${i}" ${checked} ${isAdmin ? '' : 'disabled'}>
-        </div>`;
-      }
-      html += `</div></div></div>`;
+        </div></div>`;
       return html;
     }
 
@@ -280,7 +288,14 @@
         </div>
         <button id="logoutBtn" class="btn" style="background:var(--gold);color:var(--black);border:none;font-weight:500;">Salir</button>
       </div>
-        <div class="container"><h2 style="font-size:18px;margin-bottom:1.5rem;">Control de Métricas</h2><div class="grid">`;
+        <div class="container">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:2rem;">
+          <button id="tabEmbajadores" class="btn" style="padding:12px;background:var(--gold);color:var(--black);border:none;font-weight:600;border-radius:6px;">Embajadores</button>
+          <button id="tabEventos" class="btn" style="padding:12px;background:var(--surface-1);color:var(--text-primary);border:none;font-weight:600;border-radius:6px;">Eventos</button>
+        </div>
+        <div id="seccionEmbajadores">
+          <h2 style="font-size:18px;margin-bottom:1.5rem;">Control de Métricas</h2>
+          <div class="grid">`;
 
       this.state.ambajadores.forEach(emb => {
         const pts = emb.inscritos * 100 + emb.reels_10k * 5 + emb.posts_1k * 2 + emb.testimoniales * 3;
@@ -297,7 +312,46 @@
           <input type="text" class="gym-name" data-user="${emb.username}" value="${emb.beneficiario_gym}" placeholder="Nombre" style="width:100%;padding:6px;border:0.5px solid var(--border);border-radius:var(--radius);font-size:11px;margin-bottom:6px;">
           <input type="number" class="gym-days" data-user="${emb.username}" value="${emb.dias_restantes}" placeholder="Días" style="width:100%;padding:6px;border:0.5px solid var(--border);border-radius:var(--radius);font-size:11px;"></div>`;
       });
-      html += `</div></div>`;
+      html += `</div></div>
+        <div id="seccionEventos" style="display:none;">
+          <h2 style="font-size:18px;margin-bottom:1.5rem;">Gestión de Eventos</h2>
+          <div class="card">
+            <div class="card-title">Agregar Evento</div>
+            <div class="form-group">
+              <label>Nombre del Evento</label>
+              <input type="text" id="eventName" placeholder="Ej: Carrera Mazahua" style="width:100%;padding:10px;border:0.5px solid var(--border);border-radius:var(--radius);">
+            </div>
+            <div class="form-group">
+              <label>Fecha</label>
+              <input type="date" id="eventDate" style="width:100%;padding:10px;border:0.5px solid var(--border);border-radius:var(--radius);">
+            </div>
+            <div class="form-group">
+              <label>Tipo</label>
+              <input type="text" id="eventType" placeholder="Ej: Carrera, Torneo, Activación" style="width:100%;padding:10px;border:0.5px solid var(--border);border-radius:var(--radius);">
+            </div>
+            <button id="addEventBtn" class="btn-primary">Agregar Evento</button>
+          </div>
+          <div style="margin-top:2rem;">
+            <h3 style="font-size:14px;margin-bottom:1rem;">Eventos Activos</h3>
+            <div class="grid">`;
+      
+      this.state.eventos.forEach(evt => {
+        html += `<div class="card">
+          <div style="font-weight:600;margin-bottom:4px;">${evt.nombre}</div>
+          <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px;">${evt.fecha} | ${evt.tipo}</div>
+          <div style="font-size:10px;margin-bottom:12px;">
+            <select class="event-status-select" data-event="${evt.id}" style="width:100%;padding:6px;border:0.5px solid var(--gold);border-radius:3px;background:var(--surface-1);color:var(--text-primary);font-size:10px;cursor:pointer;">
+              <option value="Por Confirmar" ${evt.estado === 'Por Confirmar' ? 'selected' : ''}>Por Confirmar</option>
+              <option value="Confirmado" ${evt.estado === 'Confirmado' ? 'selected' : ''}>Confirmado</option>
+              <option value="Ejemplo - Por Confirmar" ${evt.estado === 'Ejemplo - Por Confirmar' ? 'selected' : ''}>Ejemplo - Por Confirmar</option>
+            </select>
+          </div>
+          <div style="font-size:11px;margin-bottom:12px;">Reservas: ${evt.reservados.length}</div>
+          <button class="btn delete-event" data-event="${evt.id}" style="width:100%;padding:6px;background:#ff4444;color:white;border:none;border-radius:4px;font-size:11px;">Eliminar</button>
+        </div>`;
+      });
+      
+      html += `</div></div></div></div>`;
       return html;
     }
 
@@ -355,9 +409,86 @@
         </div>
 
         <div class="card" style="margin-top:1.5rem;">
-          <div class="card-title">Seguimiento de Contenido (20 jul - 20 sep)</div>
+          <div class="card-title">💡 Ideas de Contenido</div>
+          ${emb.ideas.map((idea, idx) => `<div class="idea-box">💭 ${idea}</div>`).join('')}
+        </div>
+
+        <div class="card" style="margin-top:1.5rem;">
+          <div class="card-title">🌟 Diferenciadores SmartFIT</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:12px;">
+            <div style="background:var(--gold);color:var(--black);padding:12px;border-radius:8px;text-align:center;font-size:10px;font-weight:600;line-height:1.4;">🏅 Coaches Certificados</div>
+            <div style="background:var(--gold);color:var(--black);padding:12px;border-radius:8px;text-align:center;font-size:10px;font-weight:600;line-height:1.4;">🏋️ Aparatos Profesionales</div>
+            <div style="background:var(--gold);color:var(--black);padding:12px;border-radius:8px;text-align:center;font-size:10px;font-weight:600;line-height:1.4;">❄️ Aire Acondicionado</div>
+            <div style="background:var(--gold);color:var(--black);padding:12px;border-radius:8px;text-align:center;font-size:10px;font-weight:600;line-height:1.4;">🚗 Estacionamiento Seguro</div>
+            <div style="background:var(--gold);color:var(--black);padding:12px;border-radius:8px;text-align:center;font-size:10px;font-weight:600;line-height:1.4;">🔒 Lockers</div>
+            <div style="background:var(--gold);color:var(--black);padding:12px;border-radius:8px;text-align:center;font-size:10px;font-weight:600;line-height:1.4;">🚿 Regaderas</div>
+            <div style="background:var(--gold);color:var(--black);padding:12px;border-radius:8px;text-align:center;font-size:10px;font-weight:600;line-height:1.4;">👕 Vestidores</div>
+            <div style="background:var(--gold);color:var(--black);padding:12px;border-radius:8px;text-align:center;font-size:10px;font-weight:600;line-height:1.4;">💺 Sillones Masajeadores</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:1.5rem;">
+          <div class="card-title">🎥 Contenido de Visitas</div>
+          <div class="idea-box" style="background:rgba(251,185,44,0.15);border-left:3px solid var(--gold);">
+            <strong style="color:var(--gold);">📍 Visita 1 (20 jul - 20 ago)</strong>
+            <div style="font-size:10px;margin-top:6px;line-height:1.5;color:var(--text-primary);">
+              Realiza una visita presencial y crea un <strong>Reel</strong> mostrando los diferenciadores de SmartFIT: coaches certificados, aparatos profesionales, aire acondicionado, estacionamiento seguro y las facilidades que nos hacen únicos.
+            </div>
+            <div style="font-size:9px;margin-top:8px;padding-top:8px;border-top:0.5px solid rgba(251,185,44,0.3);color:var(--text-secondary);font-style:italic;">
+              ⚡ Ojo: Este reel puede ser 1 de los 2 solicitados en la generación de contenido.
+            </div>
+          </div>
+          <div class="idea-box" style="background:rgba(251,185,44,0.15);border-left:3px solid var(--gold);">
+            <strong style="color:var(--gold);">📍 Visita 2 (21 ago - 20 sep)</strong>
+            <div style="font-size:10px;margin-top:6px;line-height:1.5;color:var(--text-primary);">
+              Regresa para una segunda visita y comparte mediante <strong>Historias</strong> los diferenciadores de SmartFIT que nos destacan de la competencia: lockers, regaderas, vestidores, sillones masajeadores y la experiencia completa que ofrecemos.
+            </div>
+            <div style="font-size:9px;margin-top:8px;padding-top:8px;border-top:0.5px solid rgba(251,185,44,0.3);color:var(--text-secondary);font-style:italic;">
+              ⚡ Ojo: Estas historias cuentan dentro de las 24 historias solicitadas en el período (8 semanas × 3 historias).
+            </div>
+          </div>
+          <div class="checklist-section">
+            <div class="checklist-section-title">📋 Seguimiento (Javier actualiza)</div>
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:8px;line-height:1.4;">
+              Avísale a Javier cuando completes cada visita y él actualizará tu seguimiento aquí.
+            </div>
+            <div class="checklist-row">
+              <div class="checkbox-item" title="Visita 1: 20 jul - 20 ago">
+                <input type="checkbox" class="visita-check" data-idx="0" ${emb.visitas_mensuales[0] ? 'checked' : ''} disabled>
+              </div>
+              <div class="checkbox-item" title="Visita 2: 21 ago - 20 sep">
+                <input type="checkbox" class="visita-check" data-idx="1" ${emb.visitas_mensuales[1] ? 'checked' : ''} disabled>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:1.5rem;">
+          <div class="card-title">📊 Seguimiento de Contenido (20 jul - 20 sep)</div>
           ${this.renderChecklistSection(emb, false)}
         </div>
+
+        <div class="card" style="margin-top:1.5rem;">
+          <div class="card-title">🎤 Eventos de Campaña</div>
+          <div class="events-info">
+            En este período de campaña gestionaremos presencia en distintos eventos presenciales. Aquí podrás sumarte para inscribir a más personas a tu red de inscritos. Si te interesa participar, haz clic en "Reservar" y nos pondremos en contacto para darte todos los detalles.
+          </div>
+          <div style="font-size:12px;">`;
+
+      this.state.eventos.forEach(evt => {
+        const isReserved = evt.reservados.includes(emb.username);
+        html += `<div class="event-item">
+          <div>
+            <div class="event-name">${evt.nombre}</div>
+            <div class="event-date">${evt.fecha}</div>
+            <div class="event-status">${evt.estado}</div>
+          </div>
+          <button class="btn reserve-btn" data-event="${evt.id}" style="background:${isReserved ? 'var(--gold)' : 'var(--surface-1)'};color:${isReserved ? 'var(--black)' : 'var(--text-primary)'};border:0.5px solid var(--border);padding:6px 12px;border-radius:4px;">
+          ${isReserved ? '✓ Reservado' : 'Reservar'}</button>
+        </div>`;
+      });
+
+      html += `</div></div>
 
         <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(250px,1fr));margin-top:1.5rem;">
         <div class="card">
@@ -366,19 +497,7 @@
           <button id="downloadEjemplo" class="btn-primary" style="margin-bottom:8px;">📥 Ejemplo Código</button>
           <button id="downloadLogos" class="btn-primary">Logos SmartFIT</button>
         </div>
-
-        <div class="card">
-          <div class="card-title">Eventos</div>
-          <div style="font-size:12px;">`;
-
-      this.state.eventos.forEach(evt => {
-        const isReserved = evt.reservados.includes(emb.username);
-        html += `<div class="event-item"><div><div class="event-name">${evt.nombre}</div><div class="event-date">${evt.fecha}</div></div>
-        <button class="btn reserve-btn" data-event="${evt.id}" style="background:${isReserved ? 'var(--gold)' : 'var(--surface-1)'};color:${isReserved ? 'var(--black)' : 'var(--text-primary)'};border:0.5px solid var(--border);">
-        ${isReserved ? '✓ Reservado' : 'Reservar'}</button></div>`;
-      });
-
-      html += `</div></div></div></div>`;
+        </div></div>`;
       return html;
     }
 
@@ -393,12 +512,10 @@
             b.style.background = b.dataset.type === type ? 'var(--gold)' : 'transparent';
             b.style.color = b.dataset.type === type ? 'var(--black)' : 'var(--text-primary)';
           });
-          
           const titleEl = document.getElementById('loginTitle');
           const userLabelEl = document.getElementById('userLabel');
           const helpTextEl = document.getElementById('helpText');
           const usernameEl = document.getElementById('username');
-          
           if (type === 'admin') {
             titleEl.textContent = 'Acceso Admin';
             userLabelEl.textContent = 'Email';
@@ -410,7 +527,6 @@
             usernameEl.placeholder = 'ej: CharlySMART';
             helpTextEl.textContent = 'ej: CharlySMART / CarlosSM26';
           }
-          
           document.getElementById('username').value = '';
           document.getElementById('password').value = '';
           document.getElementById('errorMsg').style.display = 'none';
@@ -422,7 +538,6 @@
         const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
         const errorMsg = document.getElementById('errorMsg');
-
         if (username === 'consultasummit@gmail.com' && password === 'Marketing1*') {
           this.state.currentUser = { role: 'admin', email: username };
           this.state.view = 'admin';
@@ -430,7 +545,6 @@
           this.render();
           return;
         }
-
         const emb = this.state.ambajadores.find(e => e.username === username);
         if (emb && password === emb.password) {
           this.state.currentUser = { role: 'embajador', username, nombre: emb.nombre };
@@ -451,6 +565,67 @@
         this.render();
       });
 
+      document.getElementById('tabEmbajadores').addEventListener('click', () => {
+        document.getElementById('seccionEmbajadores').style.display = 'block';
+        document.getElementById('seccionEventos').style.display = 'none';
+        document.getElementById('tabEmbajadores').style.background = 'var(--gold)';
+        document.getElementById('tabEmbajadores').style.color = 'var(--black)';
+        document.getElementById('tabEventos').style.background = 'var(--surface-1)';
+        document.getElementById('tabEventos').style.color = 'var(--text-primary)';
+      });
+
+      document.getElementById('tabEventos').addEventListener('click', () => {
+        document.getElementById('seccionEmbajadores').style.display = 'none';
+        document.getElementById('seccionEventos').style.display = 'block';
+        document.getElementById('tabEventos').style.background = 'var(--gold)';
+        document.getElementById('tabEventos').style.color = 'var(--black)';
+        document.getElementById('tabEmbajadores').style.background = 'var(--surface-1)';
+        document.getElementById('tabEmbajadores').style.color = 'var(--text-primary)';
+      });
+
+      document.getElementById('addEventBtn').addEventListener('click', () => {
+        const name = document.getElementById('eventName').value;
+        const date = document.getElementById('eventDate').value;
+        const type = document.getElementById('eventType').value;
+        if (name && date && type) {
+          const newEvent = { id: Math.max(...this.state.eventos.map(e => e.id), 0) + 1, nombre: name, fecha: date, tipo: type, estado: 'Por Confirmar', reservados: [] };
+          this.state.eventos.push(newEvent);
+          this.save();
+          this.render();
+        }
+      });
+
+      document.querySelectorAll('.event-status-select').forEach(select => {
+        select.addEventListener('change', () => {
+          const eventId = parseInt(select.dataset.event);
+          const newStatus = select.value;
+          const evt = this.state.eventos.find(e => e.id === eventId);
+          if (evt) {
+            evt.estado = newStatus;
+            this.save();
+            this.render();
+          }
+        });
+      });
+
+      document.querySelectorAll('.delete-event').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const eventId = parseInt(btn.dataset.event);
+          this.state.eventos = this.state.eventos.filter(e => e.id !== eventId);
+          this.save();
+          this.render();
+        });
+      });
+
+      const getEmbajadorFromCard = (element) => {
+        const card = element.closest('.card');
+        if (!card) return null;
+        const nameEl = card.querySelector('[style*="font-weight:600"]');
+        if (!nameEl) return null;
+        const nombre = nameEl.textContent;
+        return this.state.ambajadores.find(e => e.nombre === nombre);
+      };
+
       document.querySelectorAll('.add-user').forEach(btn => {
         btn.addEventListener('click', () => {
           const emb = this.state.ambajadores.find(e => e.username === btn.dataset.user);
@@ -468,25 +643,6 @@
           this.render();
         });
       });
-
-      document.querySelectorAll('.reel-check').forEach(cb => {
-        cb.addEventListener('change', () => {
-          const username = cb.closest('.card').querySelector('.embajador-avatar').parentElement.parentElement.querySelector('.embajador-avatar')?.dataset?.username || this.getCurrentUserFromCard();
-          const idx = parseInt(cb.dataset.idx);
-          const emb = this.state.ambajadores.find(e => e.username === cb.closest('.card').parentElement.parentElement.querySelector('input[data-user]')?.dataset.user || this.getCurrentUserFromContext());
-          if (emb) { emb.reels[idx] = cb.checked; this.save(); }
-        });
-      });
-
-      // Obtener usuario del contexto - buscar en el elemento más cercano
-      const getEmbajadorFromCard = (element) => {
-        const card = element.closest('.card');
-        if (!card) return null;
-        const nameEl = card.querySelector('[style*="font-weight:600"]');
-        if (!nameEl) return null;
-        const nombre = nameEl.textContent;
-        return this.state.ambajadores.find(e => e.nombre === nombre);
-      };
 
       document.querySelectorAll('.reel-check').forEach(cb => {
         cb.addEventListener('change', () => {
@@ -577,9 +733,16 @@
         btn.addEventListener('click', () => {
           const eventId = parseInt(btn.dataset.event);
           const evt = this.state.eventos.find(e => e.id === eventId);
+          const emb = this.state.ambajadores.find(e => e.username === this.state.currentUser.username);
           const idx = evt.reservados.indexOf(this.state.currentUser.username);
-          if (idx > -1) evt.reservados.splice(idx, 1);
-          else evt.reservados.push(this.state.currentUser.username);
+          if (idx > -1) {
+            evt.reservados.splice(idx, 1);
+          } else {
+            evt.reservados.push(this.state.currentUser.username);
+            const mensaje = `¡Hola Javier! me interesa acompañarlos al evento "${evt.nombre}", ¿me das más información?`;
+            const whatsappUrl = `https://wa.me/5215579343226?text=${encodeURIComponent(mensaje)}`;
+            window.open(whatsappUrl, '_blank');
+          }
           this.save();
           this.render();
         });
