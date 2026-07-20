@@ -495,7 +495,8 @@
           <div class="card-title">Descargas</div>
           <button id="downloadPlantillas" class="btn-primary" style="margin-bottom:8px;">📥 Plantillas Personales</button>
           <button id="downloadEjemplo" class="btn-primary" style="margin-bottom:8px;">📥 Ejemplo Código</button>
-          <button id="downloadLogos" class="btn-primary">Logos SmartFIT</button>
+          <button id="downloadLogos" class="btn-primary" style="margin-bottom:8px;">Logos SmartFIT</button>
+          <button id="downloadAsistenteInscripcion" class="btn-primary">📋 Asistente Inscripción</button>
         </div>
         </div></div>`;
       return html;
@@ -726,6 +727,33 @@
       if (downloadLogos) {
         downloadLogos.addEventListener('click', () => {
           window.open('https://drive.google.com/drive/folders/1E7kAN013NVswxg-TQVQzqomHy2X8sYTS?usp=sharing', '_blank');
+        });
+      }
+
+      // Mapeo de embajadores a sus links de Asistente Inscripción
+      const embajadorLinks = {
+        'CharlySMART': 'https://drive.google.com/file/d/1AaDkXOf7ZJ7WZylt9aQLlGhEBiK5ccjo/view?usp=sharing',
+        'CaroSMART': 'https://drive.google.com/file/d/1Uec42fCpblw6-8Jxm8BaayB5qJa2MtQY/view?usp=sharing',
+        'DanySMART': 'https://drive.google.com/file/d/132zOkiqK51kVYP-Cy4ecJQWBHsHqjd5Q/view?usp=sharing',
+        'StephSMART': 'https://drive.google.com/file/d/1Vo_rZ71HHD1qTdiJTarOmMtcZ7D8DJlH/view?usp=sharing',
+        'MishSMART': 'https://drive.google.com/file/d/1QXJ5ZcaIz8mx2HdRbvt4iXSNCbXEQC6s/view?usp=sharing',
+        'MontseSMART': 'https://drive.google.com/file/d/1AMmWCs8ZCB7bxxYPqQ2DBl-IuEfH8t3s/view?usp=sharing',
+        'ThavSMART': 'https://drive.google.com/file/d/1owfRtDrCoeizvKqSYVcW2tLU01Dge1z9/view?usp=sharing',
+        'ZemmaSMART': 'https://drive.google.com/file/d/1Ed3wPhqJA9FtUttuFW1Blo7Zl22xsnp1/view?usp=sharing'
+      };
+
+      const downloadAsistenteInscripcion = document.getElementById('downloadAsistenteInscripcion');
+      if (downloadAsistenteInscripcion) {
+        downloadAsistenteInscripcion.addEventListener('click', () => {
+          if (this.state.currentUser) {
+            const username = this.state.currentUser.username;
+            const link = embajadorLinks[username];
+            if (link) {
+              window.open(link, '_blank');
+            } else {
+              alert('No hay link de Asistente Inscripción asignado para tu usuario');
+            }
+          }
         });
       }
 
