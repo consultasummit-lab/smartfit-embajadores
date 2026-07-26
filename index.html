@@ -82,6 +82,55 @@
 <body>
 
 <div id="app"></div>
+<div id="syncBadge" style="position:fixed;bottom:10px;right:10px;z-index:9999;font:11px Arial,sans-serif;padding:5px 10px;border-radius:12px;background:#000;color:#FBB92C;border:1px solid #FBB92C;opacity:.85;display:none;"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyD77eY7khoEvNR_nsTDpHLKVAphLBMVM1M",
+    authDomain: "smartfit-embajadores.firebaseapp.com",
+    databaseURL: "https://smartfit-embajadores-default-rtdb.firebaseio.com",
+    projectId: "smartfit-embajadores",
+    storageBucket: "smartfit-embajadores.firebasestorage.app",
+    messagingSenderId: "901446959193",
+    appId: "1:901446959193:web:347d53d92d88aeb1587148"
+  };
+
+  var fbRef = null, fbOK = false;
+  var CLIENT_ID = Math.random().toString(36).slice(2) + '-' + Date.now();
+
+  try {
+    firebase.initializeApp(firebaseConfig);
+    fbRef = firebase.database().ref('smartfit_data');
+    fbOK = true;
+  } catch (e) {
+    console.error('Firebase no disponible, se usara almacenamiento local:', e);
+  }
+
+  function setSync(texto, color) {
+    var b = document.getElementById('syncBadge');
+    if (!b) return;
+    b.textContent = texto;
+    b.style.color = color || '#FBB92C';
+    b.style.borderColor = color || '#FBB92C';
+    b.style.display = 'block';
+  }
+
+  // Normaliza arreglos de booleanos (Firebase puede devolverlos como objeto)
+  function normBools(v, n) {
+    var out = new Array(n).fill(false), i;
+    if (Array.isArray(v)) {
+      for (i = 0; i < v.length && i < n; i++) out[i] = v[i] === true;
+    } else if (v && typeof v === 'object') {
+      Object.keys(v).forEach(function (k) {
+        var idx = parseInt(k, 10);
+        if (idx >= 0 && idx < n) out[idx] = v[k] === true;
+      });
+    }
+    return out;
+  }
+</script>
 
 <script>
   const avatarUrls = {
@@ -120,37 +169,137 @@
     }
 
     init() {
-      this.initializeData();
+      this.aplicarDatos(null);
+      this.pendingRender = false;
+
+      if (!fbOK) {
+        this.aplicarDatos(this.leerLocal());
+        this.render();
+        setSync('Sin conexion - datos locales', '#ff6b6b');
+        return;
+      }
+
+      setSync('Sincronizando...');
+
+      fbRef.on('value', (snap) => {
+        const remoto = snap.val();
+
+        if (!remoto) {
+          // Primera vez: si hay datos guardados en este navegador, se suben
+          const local = this.leerLocal();
+          this.aplicarDatos(local);
+          this.save();
+          this.render();
+          setSync('Conectado');
+          return;
+        }
+
+        if (remoto.writer === CLIENT_ID) { setSync('Conectado'); return; }
+
+        this.aplicarDatos(remoto);
+        this.renderSeguro();
+        setSync('Conectado');
+      }, (err) => {
+        console.error('Error de lectura en Firebase:', err);
+        this.aplicarDatos(this.leerLocal());
+        this.render();
+        setSync('Sin conexion - datos locales', '#ff6b6b');
+      });
+
+      // Si habia un refresco pendiente por un campo enfocado, se aplica al soltarlo
+      setInterval(() => {
+        if (!this.pendingRender) return;
+        const ae = document.activeElement;
+        if (ae && ['INPUT', 'SELECT', 'TEXTAREA'].indexOf(ae.tagName) !== -1) return;
+        this.pendingRender = false;
+        this.render();
+      }, 1200);
+    }
+
+    renderSeguro() {
+      const ae = document.activeElement;
+      if (ae && ['INPUT', 'SELECT', 'TEXTAREA'].indexOf(ae.tagName) !== -1) {
+        this.pendingRender = true;
+        return;
+      }
       this.render();
     }
 
-    initializeData() {
-      const stored = localStorage.getItem('smartfit_data');
-      let existingData = null;
-      if (stored) { try { existingData = JSON.parse(stored); } catch (e) {} }
+    aplicarDatos(data) {
+      const prog = (data && data.progreso) || {};
       this.state.ambajadores = this.embajadoresData.map(emb => {
-        const existing = existingData?.ambajadores?.find(e => e.username === emb.username);
+        const p = prog[emb.username] || {};
         return {
-          username: emb.username, nombre: emb.nombre, codigo: emb.codigo, password: emb.password, avatarKey: emb.avatarKey, plantillasUrl: emb.plantillasUrl, ideas: emb.ideas,
-          inscritos: existing?.inscritos || 0, reels_10k: existing?.reels_10k || 0, posts_1k: existing?.posts_1k || 0,
-          testimoniales: existing?.testimoniales || 0,
-          reels: existing?.reels || [false, false],
-          historias: existing?.historias || Array(24).fill(false),
-          post_fijo: existing?.post_fijo || false,
-          visitas_mensuales: existing?.visitas_mensuales || [false, false],
-          beneficiario_gym: existing?.beneficiario_gym || '', dias_restantes: existing?.dias_restantes || 0
+          username: emb.username, nombre: emb.nombre, codigo: emb.codigo, password: emb.password,
+          avatarKey: emb.avatarKey, plantillasUrl: emb.plantillasUrl, ideas: emb.ideas,
+          inscritos: p.inscritos || 0, reels_10k: p.reels_10k || 0, posts_1k: p.posts_1k || 0,
+          testimoniales: p.testimoniales || 0,
+          reels: normBools(p.reels, 2),
+          historias: normBools(p.historias, 24),
+          post_fijo: p.post_fijo === true,
+          visitas_mensuales: normBools(p.visitas_mensuales, 2),
+          beneficiario_gym: p.beneficiario_gym || '', dias_restantes: p.dias_restantes || 0
         };
       });
-      this.state.eventos = existingData?.eventos || [
+
+      const ev = (data && data.eventos) ? data.eventos : null;
+      this.state.eventos = (ev && ev.length)
+        ? ev.map(e => ({ id: e.id, nombre: e.nombre, fecha: e.fecha, tipo: e.tipo, estado: e.estado, reservados: e.reservados || [] }))
+        : [
         { id: 1, nombre: 'Carrera Mazahua', fecha: '2026-08-02', tipo: 'Carrera', estado: 'Ejemplo - Por Confirmar', reservados: [] },
         { id: 2, nombre: 'Torneo de Voleibol', fecha: '2026-08-23', tipo: 'Torneo', estado: 'Ejemplo - Por Confirmar', reservados: [] },
-        { id: 3, nombre: 'Activación Centro Comercial', fecha: '2026-09-15', tipo: 'Activación', estado: 'Ejemplo - Por Confirmar', reservados: [] }
+        { id: 3, nombre: 'Activaci\u00f3n Centro Comercial', fecha: '2026-09-15', tipo: 'Activaci\u00f3n', estado: 'Ejemplo - Por Confirmar', reservados: [] }
       ];
-      this.save();
+    }
+
+    // Lee respaldo nuevo o, si no existe, el formato anterior de localStorage
+    leerLocal() {
+      try {
+        const nuevo = localStorage.getItem('smartfit_backup');
+        if (nuevo) return JSON.parse(nuevo);
+      } catch (e) {}
+      try {
+        const viejo = localStorage.getItem('smartfit_data');
+        if (!viejo) return null;
+        const d = JSON.parse(viejo);
+        const progreso = {};
+        (d.ambajadores || []).forEach(e => {
+          progreso[e.username] = {
+            inscritos: e.inscritos || 0, reels_10k: e.reels_10k || 0, posts_1k: e.posts_1k || 0,
+            testimoniales: e.testimoniales || 0, reels: e.reels || [], historias: e.historias || [],
+            post_fijo: e.post_fijo === true, visitas_mensuales: e.visitas_mensuales || [],
+            beneficiario_gym: e.beneficiario_gym || '', dias_restantes: e.dias_restantes || 0
+          };
+        });
+        return { progreso: progreso, eventos: d.eventos || [] };
+      } catch (e) { return null; }
     }
 
     save() {
-      localStorage.setItem('smartfit_data', JSON.stringify({ ambajadores: this.state.ambajadores, eventos: this.state.eventos }));
+      const progreso = {};
+      this.state.ambajadores.forEach(e => {
+        progreso[e.username] = {
+          inscritos: e.inscritos || 0, reels_10k: e.reels_10k || 0, posts_1k: e.posts_1k || 0,
+          testimoniales: e.testimoniales || 0,
+          reels: e.reels, historias: e.historias, post_fijo: e.post_fijo === true,
+          visitas_mensuales: e.visitas_mensuales,
+          beneficiario_gym: e.beneficiario_gym || '', dias_restantes: e.dias_restantes || 0
+        };
+      });
+      const eventos = this.state.eventos.map(ev => ({
+        id: ev.id, nombre: ev.nombre, fecha: ev.fecha, tipo: ev.tipo,
+        estado: ev.estado, reservados: ev.reservados || []
+      }));
+      const payload = { progreso: progreso, eventos: eventos, writer: CLIENT_ID, updatedAt: Date.now() };
+
+      try { localStorage.setItem('smartfit_backup', JSON.stringify({ progreso: progreso, eventos: eventos })); } catch (e) {}
+
+      if (fbOK) {
+        setSync('Guardando...');
+        fbRef.set(payload)
+          .then(() => setSync('Guardado'))
+          .catch(err => { console.error('Error al guardar:', err); setSync('Error al guardar', '#ff6b6b'); });
+      }
     }
 
     getAvatarImg(avatarKey) {
