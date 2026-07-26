@@ -387,8 +387,11 @@
           <div style="text-align:center;"><div style="font-size:13px;font-weight:600;margin-bottom:4px;">${emb.nombre}</div>
           <div style="font-size:11px;color:var(--text-secondary);margin-bottom:12px;">${emb.codigo}</div>
           <div class="points-large">${pts} pts</div>
-          <div style="font-size:10px;color:var(--text-secondary);margin-top:8px;">
-            📍 ${emb.inscritos} | 🎬 ${emb.reels_10k} | 📄 ${emb.posts_1k} | 💬 ${emb.testimoniales}
+          <div style="border-top:1px solid var(--surface-1);margin-top:12px;padding-top:8px;">
+            <div style="font-size:9px;color:var(--text-secondary);letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;">Avance del checklist</div>
+            <div style="font-size:10px;color:var(--text-secondary);">
+              👤 ${emb.inscritos} | 🎥 ${emb.reels.filter(Boolean).length}/2 | 📱 ${emb.historias.filter(Boolean).length}/24 | 📍 ${emb.post_fijo ? '✓' : '–'}
+            </div>
           </div></div></div>`;
       });
 
