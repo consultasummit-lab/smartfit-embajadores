@@ -72,6 +72,10 @@
             margin-bottom: 28px;
         }
         
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+        
         label {
             display: flex;
             align-items: center;
@@ -101,10 +105,17 @@
             font-size: 15px;
             font-family: inherit;
             color: #333;
+            background-color: #ffffff;
+            transition: all 0.2s ease;
+        }
+        
+        select:hover {
+            border-color: #FBB92C;
         }
         
         select:focus {
             border-color: #000000;
+            box-shadow: 0 0 0 3px rgba(251, 185, 44, 0.1);
             outline: none;
         }
         
@@ -133,6 +144,7 @@
             font-weight: 500;
             cursor: pointer;
             font-size: 14px;
+            display: block;
         }
         
         .info-box {
@@ -143,6 +155,7 @@
             font-size: 13px;
             color: #555;
             border-radius: 4px;
+            font-weight: 500;
         }
         
         .button-group {
@@ -159,21 +172,30 @@
             border: none;
             border-radius: 8px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
         }
         
         .btn-submit {
             background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
             color: #FFFFFF;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
         
         .btn-submit:hover {
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
         
         .btn-reset {
             background: #f0f0f0;
             color: #333;
             border: 2px solid #e0e0e0;
+        }
+        
+        .btn-reset:hover {
+            background: #e8e8e8;
+            border-color: #d0d0d0;
         }
         
         .footer {
@@ -183,17 +205,25 @@
             margin-top: 40px;
         }
         
-        .form-container.hide { display: none; }
-        
+        /* PANTALLA DE RESUMEN */
         .resumen-container {
             display: none;
             background: white;
             padding: 40px 30px;
             border-radius: 16px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            min-height: 100vh;
         }
         
-        .resumen-container.show { display: block; }
+        .resumen-container.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         
         .resumen-header {
             background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
@@ -207,13 +237,14 @@
         .resumen-header h1 {
             font-size: 36px;
             font-weight: 700;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         
-        .embajador-nombre {
+        .resumen-header .embajador-nombre {
             font-size: 28px;
             color: #FBB92C;
             font-weight: 700;
+            margin-top: 15px;
         }
         
         .resumen-section {
@@ -229,6 +260,7 @@
             font-size: 16px;
             margin-bottom: 20px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .resumen-item {
@@ -244,21 +276,25 @@
             color: #000000;
             font-size: 13px;
             text-transform: uppercase;
+            letter-spacing: 0.3px;
             margin-bottom: 6px;
         }
         
         .resumen-item-value {
             color: #333;
             font-size: 15px;
+            line-height: 1.6;
         }
         
         .resumen-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
+            margin-top: 8px;
         }
         
         .tag {
+            display: inline-block;
             background: #000000;
             color: #FBB92C;
             padding: 6px 12px;
@@ -283,34 +319,95 @@
         .btn-screenshot {
             background: linear-gradient(135deg, #FBB92C 0%, #f0a800 100%);
             color: #000000;
+            padding: 16px 40px;
+            font-weight: 700;
+            font-size: 16px;
+            margin-right: 10px;
+            box-shadow: 0 4px 15px rgba(251, 185, 44, 0.3);
+        }
+        
+        .btn-screenshot:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(251, 185, 44, 0.4);
         }
         
         .btn-volver {
             background: #e0e0e0;
             color: #333;
+            padding: 16px 40px;
+            font-weight: 700;
+            font-size: 16px;
             border: 2px solid #d0d0d0;
         }
         
+        .btn-volver:hover {
+            background: #d0d0d0;
+        }
+        
+        .form-container {
+            display: block;
+        }
+        
+        .form-container.hide {
+            display: none;
+        }
+        
         @media (max-width: 600px) {
-            .form-section { padding: 25px; }
-            .multiple-select { grid-template-columns: 1fr; }
-            .resumen-header { padding: 30px 20px; }
-            .resumen-header h1 { font-size: 28px; }
+            .header {
+                padding: 35px 20px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .form-section {
+                padding: 25px;
+                margin-bottom: 18px;
+            }
+            
+            .multiple-select {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column-reverse;
+            }
+            
+            .resumen-header {
+                padding: 30px 20px;
+            }
+            
+            .resumen-header h1 {
+                font-size: 28px;
+            }
+            
+            .resumen-header .embajador-nombre {
+                font-size: 24px;
+            }
+            
+            .resumen-container {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- FORMULARIO -->
         <div class="form-container" id="formContainer">
             <div class="header">
                 <h1>💪 SmartFIT</h1>
                 <p>Embajadores Fundadores</p>
-                <div class="subtitle">Cuéntanos cómo eres para que tu comunidad te conozca mejor</div>
+                <div class="subtitle">
+                    Cuéntanos cómo eres para que tu comunidad te conozca mejor
+                </div>
             </div>
 
             <form id="form">
                 <div class="form-section">
                     <div class="form-section-title">Tu Perfil</div>
+                    
                     <div class="form-group">
                         <label><span class="question-number">1</span>¿Cuál es tu nombre?</label>
                         <select id="nombre" name="nombre" required>
@@ -325,6 +422,7 @@
                             <option value="Montse">Montse Argueta (Montse)</option>
                         </select>
                     </div>
+
                     <div class="form-group">
                         <label><span class="question-number">2</span>¿Cómo describirías tu personalidad?</label>
                         <select id="personalidad" name="personalidad" required>
@@ -337,6 +435,7 @@
                             <option value="Aventurero(a)">Aventurero(a)</option>
                         </select>
                     </div>
+
                     <div class="form-group">
                         <label><span class="question-number">3</span>¿Qué tipo de energía tienes normalmente?</label>
                         <select id="energia" name="energia" required>
@@ -353,6 +452,7 @@
 
                 <div class="form-section">
                     <div class="form-section-title">Tu Motivación</div>
+                    
                     <div class="form-group">
                         <label><span class="question-number">4</span>¿Qué te motivó a empezar a entrenar?</label>
                         <select id="motivacion" name="motivacion" required>
@@ -366,6 +466,7 @@
                             <option value="Superarme constantemente">Superarme constantemente</option>
                         </select>
                     </div>
+
                     <div class="form-group">
                         <label><span class="question-number">5</span>¿Qué representa SmartFIT para ti?</label>
                         <select id="smartfit" name="smartfit" required>
@@ -382,26 +483,28 @@
 
                 <div class="form-section">
                     <div class="form-section-title">Tus Intereses</div>
+                    
                     <div class="form-group">
                         <label><span class="question-number">6</span>¿Qué disfrutas hacer fuera del gimnasio?</label>
                         <div class="info-box">Selecciona todas las que apliquen</div>
                         <div class="multiple-select">
-                            <div class="checkbox-group"><input type="checkbox" class="interes" value="Viajar"><label>Viajar</label></div>
-                            <div class="checkbox-group"><input type="checkbox" class="interes" value="Café"><label>Café</label></div>
-                            <div class="checkbox-group"><input type="checkbox" class="interes" value="Leer"><label>Leer</label></div>
-                            <div class="checkbox-group"><input type="checkbox" class="interes" value="Videojuegos"><label>Videojuegos</label></div>
-                            <div class="checkbox-group"><input type="checkbox" class="interes" value="Series"><label>Series</label></div>
-                            <div class="checkbox-group"><input type="checkbox" class="interes" value="Senderismo"><label>Senderismo</label></div>
-                            <div class="checkbox-group"><input type="checkbox" class="interes" value="Perritos 🐕"><label>Perritos 🐕</label></div>
-                            <div class="checkbox-group"><input type="checkbox" class="interes" value="Gatitos 🐱"><label>Gatitos 🐱</label></div>
-                            <div class="checkbox-group"><input type="checkbox" class="interes" value="Cocinar"><label>Cocinar</label></div>
-                            <div class="checkbox-group"><input type="checkbox" class="interes" value="Música"><label>Música</label></div>
-                            <div class="checkbox-group"><input type="checkbox" class="interes" value="Bailar"><label>Bailar</label></div>
-                            <div class="checkbox-group"><input type="checkbox" class="interes" value="Correr"><label>Correr</label></div>
-                            <div class="checkbox-group"><input type="checkbox" class="interes" value="Pádel"><label>Pádel</label></div>
-                            <div class="checkbox-group"><input type="checkbox" class="interes" value="Fútbol"><label>Fútbol</label></div>
+                            <div class="checkbox-group"><input type="checkbox" class="interes" name="intereses" value="Viajar"><label>Viajar</label></div>
+                            <div class="checkbox-group"><input type="checkbox" class="interes" name="intereses" value="Café"><label>Café</label></div>
+                            <div class="checkbox-group"><input type="checkbox" class="interes" name="intereses" value="Leer"><label>Leer</label></div>
+                            <div class="checkbox-group"><input type="checkbox" class="interes" name="intereses" value="Videojuegos"><label>Videojuegos</label></div>
+                            <div class="checkbox-group"><input type="checkbox" class="interes" name="intereses" value="Series"><label>Series</label></div>
+                            <div class="checkbox-group"><input type="checkbox" class="interes" name="intereses" value="Senderismo"><label>Senderismo</label></div>
+                            <div class="checkbox-group"><input type="checkbox" class="interes" name="intereses" value="Perritos 🐕"><label>Perritos 🐕</label></div>
+                            <div class="checkbox-group"><input type="checkbox" class="interes" name="intereses" value="Gatitos 🐱"><label>Gatitos 🐱</label></div>
+                            <div class="checkbox-group"><input type="checkbox" class="interes" name="intereses" value="Cocinar"><label>Cocinar</label></div>
+                            <div class="checkbox-group"><input type="checkbox" class="interes" name="intereses" value="Música"><label>Música</label></div>
+                            <div class="checkbox-group"><input type="checkbox" class="interes" name="intereses" value="Bailar"><label>Bailar</label></div>
+                            <div class="checkbox-group"><input type="checkbox" class="interes" name="intereses" value="Correr"><label>Correr</label></div>
+                            <div class="checkbox-group"><input type="checkbox" class="interes" name="intereses" value="Pádel"><label>Pádel</label></div>
+                            <div class="checkbox-group"><input type="checkbox" class="interes" name="intereses" value="Fútbol"><label>Fútbol</label></div>
                         </div>
                     </div>
+
                     <div class="form-group">
                         <label><span class="question-number">7</span>¿Qué describe mejor tu forma de entrenar?</label>
                         <select id="entrenar" name="entrenar" required>
@@ -418,18 +521,19 @@
 
                 <div class="form-section">
                     <div class="form-section-title">Tu Comunidad</div>
+                    
                     <div class="form-group">
                         <label><span class="question-number">8</span>¿Qué características tiene tu comunidad ideal?</label>
                         <div class="info-box">Selecciona todas las que apliquen</div>
                         <div class="multiple-select">
-                            <div class="checkbox-group"><input type="checkbox" class="comunidad" value="Motivada"><label>Motivada</label></div>
-                            <div class="checkbox-group"><input type="checkbox" class="comunidad" value="Disciplinada"><label>Disciplinada</label></div>
-                            <div class="checkbox-group"><input type="checkbox" class="comunidad" value="Solidaria"><label>Solidaria</label></div>
-                            <div class="checkbox-group"><input type="checkbox" class="comunidad" value="Divertida"><label>Divertida</label></div>
-                            <div class="checkbox-group"><input type="checkbox" class="comunidad" value="Inclusiva"><label>Inclusiva</label></div>
-                            <div class="checkbox-group"><input type="checkbox" class="comunidad" value="Competitiva"><label>Competitiva</label></div>
-                            <div class="checkbox-group"><input type="checkbox" class="comunidad" value="Transformadora"><label>Transformadora</label></div>
-                            <div class="checkbox-group"><input type="checkbox" class="comunidad" value="Cercana"><label>Cercana</label></div>
+                            <div class="checkbox-group"><input type="checkbox" class="comunidad" name="comunidad" value="Motivada"><label>Motivada</label></div>
+                            <div class="checkbox-group"><input type="checkbox" class="comunidad" name="comunidad" value="Disciplinada"><label>Disciplinada</label></div>
+                            <div class="checkbox-group"><input type="checkbox" class="comunidad" name="comunidad" value="Solidaria"><label>Solidaria</label></div>
+                            <div class="checkbox-group"><input type="checkbox" class="comunidad" name="comunidad" value="Divertida"><label>Divertida</label></div>
+                            <div class="checkbox-group"><input type="checkbox" class="comunidad" name="comunidad" value="Inclusiva"><label>Inclusiva</label></div>
+                            <div class="checkbox-group"><input type="checkbox" class="comunidad" name="comunidad" value="Competitiva"><label>Competitiva</label></div>
+                            <div class="checkbox-group"><input type="checkbox" class="comunidad" name="comunidad" value="Transformadora"><label>Transformadora</label></div>
+                            <div class="checkbox-group"><input type="checkbox" class="comunidad" name="comunidad" value="Cercana"><label>Cercana</label></div>
                         </div>
                     </div>
                 </div>
@@ -442,63 +546,21 @@
                 </div>
             </form>
 
-            <div class="footer">SmartFIT Embajadores Fundadores © 2026</div>
+            <div class="footer">
+                SmartFIT Embajadores Fundadores © 2026
+            </div>
         </div>
 
+        <!-- PANTALLA DE RESUMEN -->
         <div class="resumen-container" id="resumenContainer">
-            <div class="resumen-header">
-                <h1>💪 SmartFIT</h1>
-                <div class="embajador-nombre" id="resumenNombre"></div>
-            </div>
-
-            <div class="resumen-section">
-                <div class="resumen-section-title">Tu Perfil</div>
-                <div class="resumen-item">
-                    <div class="resumen-item-label">Personalidad</div>
-                    <div class="resumen-item-value" id="resumenPersonalidad"></div>
-                </div>
-                <div class="resumen-item">
-                    <div class="resumen-item-label">Energía</div>
-                    <div class="resumen-item-value" id="resumenEnergia"></div>
-                </div>
-            </div>
-
-            <div class="resumen-section">
-                <div class="resumen-section-title">Tu Motivación</div>
-                <div class="resumen-item">
-                    <div class="resumen-item-label">¿Qué te motivó?</div>
-                    <div class="resumen-item-value" id="resumenMotivacion"></div>
-                </div>
-                <div class="resumen-item">
-                    <div class="resumen-item-label">¿Qué es SmartFIT para ti?</div>
-                    <div class="resumen-item-value" id="resumenSmartfit"></div>
-                </div>
-            </div>
-
-            <div class="resumen-section">
-                <div class="resumen-section-title">Tus Intereses</div>
-                <div class="resumen-item">
-                    <div class="resumen-item-label">¿Qué disfrutas hacer?</div>
-                    <div class="resumen-tags" id="resumenIntereses"></div>
-                </div>
-                <div class="resumen-item">
-                    <div class="resumen-item-label">Forma de entrenar</div>
-                    <div class="resumen-item-value" id="resumenEntrenar"></div>
-                </div>
-            </div>
-
-            <div class="resumen-section">
-                <div class="resumen-section-title">Tu Comunidad Ideal</div>
-                <div class="resumen-item">
-                    <div class="resumen-item-label">Características</div>
-                    <div class="resumen-tags" id="resumenComunidad"></div>
-                </div>
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2 style="color: #000; margin-bottom: 20px;">Tu Perfil SmartFIT</h2>
+                <canvas id="perfilCanvas" style="border: 2px solid #000; border-radius: 8px; max-width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: block; margin: 0 auto;"></canvas>
             </div>
 
             <div class="resumen-footer">
-                <p>📸 Toma un screenshot de tu perfil y envíalo a los organizadores</p>
+                <p>📸 Captura la imagen de arriba y envíala a los organizadores</p>
                 <div class="button-group">
-                    <button class="btn-screenshot" onclick="tomarScreenshot()">📸 Captura tu pantalla</button>
                     <button class="btn-volver" onclick="volverFormulario()">Volver</button>
                 </div>
             </div>
@@ -509,8 +571,123 @@
         const form = document.getElementById('form');
         const formContainer = document.getElementById('formContainer');
         const resumenContainer = document.getElementById('resumenContainer');
+        const canvas = document.getElementById('perfilCanvas');
+        const ctx = canvas.getContext('2d');
 
-        form.addEventListener('submit', (e) => {
+        function dibujarPerfil(nombre, personalidad, energia, motivacion, smartfit, entrenar, intereses, comunidad) {
+            const padding = 40;
+            const lineHeight = 26;
+            const ancho = 800;
+            
+            // Calcular altura dinámica
+            const alturaContenido = 150 + (lineHeight * 12) + 200;
+            const alto = alturaContenido + 80;
+            
+            canvas.width = ancho;
+            canvas.height = alto;
+            
+            // Fondo blanco
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, ancho, alto);
+            
+            // Encabezado (negro)
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, ancho, 110);
+            
+            // Título
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 40px Arial, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText('💪 SmartFIT', padding, 45);
+            
+            // Nombre del embajador (oro)
+            ctx.fillStyle = '#FBB92C';
+            ctx.font = 'bold 36px Arial, sans-serif';
+            ctx.fillText(nombre, padding, 90);
+            
+            let y = 160;
+            
+            // Función auxiliar para dibujar sección
+            function dibujarItem(label, valor) {
+                ctx.fillStyle = '#FBB92C';
+                ctx.font = 'bold 13px Arial, sans-serif';
+                ctx.textAlign = 'left';
+                ctx.fillText(label.toUpperCase(), padding, y);
+                y += 18;
+                
+                ctx.fillStyle = '#333333';
+                ctx.font = '15px Arial, sans-serif';
+                
+                // Envolver texto si es muy largo
+                const maxWidth = ancho - (padding * 2) - 20;
+                const words = valor.split(' ');
+                let line = '';
+                
+                for (let i = 0; i < words.length; i++) {
+                    const testLine = line + words[i] + ' ';
+                    const metrics = ctx.measureText(testLine);
+                    
+                    if (metrics.width > maxWidth && i > 0) {
+                        ctx.fillText(line, padding + 15, y);
+                        line = words[i] + ' ';
+                        y += 22;
+                    } else {
+                        line = testLine;
+                    }
+                }
+                ctx.fillText(line, padding + 15, y);
+                y += lineHeight;
+            }
+            
+            // Perfil
+            ctx.fillStyle = '#000000';
+            ctx.font = 'bold 20px Arial, sans-serif';
+            ctx.fillText('TU PERFIL', padding, y);
+            y += 35;
+            
+            dibujarItem('Personalidad:', personalidad);
+            dibujarItem('Energía:', energia);
+            
+            y += 10;
+            
+            // Motivación
+            ctx.fillStyle = '#000000';
+            ctx.font = 'bold 20px Arial, sans-serif';
+            ctx.fillText('TU MOTIVACIÓN', padding, y);
+            y += 35;
+            
+            dibujarItem('¿Qué te motivó?:', motivacion);
+            dibujarItem('¿Qué es SmartFIT para ti?:', smartfit);
+            
+            y += 10;
+            
+            // Intereses
+            ctx.fillStyle = '#000000';
+            ctx.font = 'bold 20px Arial, sans-serif';
+            ctx.fillText('TUS INTERESES', padding, y);
+            y += 35;
+            
+            dibujarItem('¿Qué disfrutas hacer?:', intereses.join(', '));
+            dibujarItem('Forma de entrenar:', entrenar);
+            
+            y += 10;
+            
+            // Comunidad
+            ctx.fillStyle = '#000000';
+            ctx.font = 'bold 20px Arial, sans-serif';
+            ctx.fillText('TU COMUNIDAD IDEAL', padding, y);
+            y += 35;
+            
+            dibujarItem('Características:', comunidad.join(', '));
+            
+            // Pie de página
+            ctx.fillStyle = '#CCCCCC';
+            ctx.font = '12px Arial, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('SmartFIT Embajadores Fundadores © 2026', ancho / 2, alto - 20);
+        }
+
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
             
             const interesesSeleccionados = document.querySelectorAll('.interes:checked');
@@ -526,35 +703,34 @@
                 return;
             }
             
-            const formData = new FormData(form);
+            // Obtener valores
+            const nombre = document.getElementById('nombre').value;
+            const personalidad = document.getElementById('personalidad').value;
+            const energia = document.getElementById('energia').value;
+            const motivacion = document.getElementById('motivacion').value;
+            const smartfit = document.getElementById('smartfit').value;
+            const entrenar = document.getElementById('entrenar').value;
+            
             const intereses = Array.from(interesesSeleccionados).map(el => el.value);
             const comunidad = Array.from(comunidadSeleccionada).map(el => el.value);
             
-            document.getElementById('resumenNombre').textContent = formData.get('nombre');
-            document.getElementById('resumenPersonalidad').textContent = formData.get('personalidad');
-            document.getElementById('resumenEnergia').textContent = formData.get('energia');
-            document.getElementById('resumenMotivacion').textContent = formData.get('motivacion');
-            document.getElementById('resumenSmartfit').textContent = formData.get('smartfit');
-            document.getElementById('resumenEntrenar').textContent = formData.get('entrenar');
+            // Dibujar canvas
+            dibujarPerfil(nombre, personalidad, energia, motivacion, smartfit, entrenar, intereses, comunidad);
             
-            const interesesHTML = intereses.map(i => `<span class="tag">${i}</span>`).join('');
-            document.getElementById('resumenIntereses').innerHTML = interesesHTML;
+            // Mostrar resumen
+            formContainer.style.display = 'none';
+            resumenContainer.style.display = 'block';
             
-            const comunidadHTML = comunidad.map(c => `<span class="tag">${c}</span>`).join('');
-            document.getElementById('resumenComunidad').innerHTML = comunidadHTML;
-            
-            formContainer.classList.add('hide');
-            resumenContainer.classList.add('show');
+            // Scroll al canvas
+            setTimeout(() => {
+                canvas.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
         });
         
         function volverFormulario() {
-            formContainer.classList.remove('hide');
-            resumenContainer.classList.remove('show');
+            formContainer.style.display = 'block';
+            resumenContainer.style.display = 'none';
             form.reset();
-        }
-        
-        function tomarScreenshot() {
-            alert('Toma un screenshot con:\n\n📱 Teléfono: Sube volumen + botón lateral\n💻 Computadora: Win+Shift+S (Windows) o Cmd+Shift+4 (Mac)');
         }
     </script>
 </body>
