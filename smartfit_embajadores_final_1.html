@@ -448,63 +448,61 @@
     </div>
 
     <script>
-    const form = document.getElementById('form');
-    const successMessage = document.querySelector('.success-message');
-    const loading = document.querySelector('.loading');
+        const form = document.getElementById('form');
+        const successMessage = document.querySelector('.success-message');
+        const loading = document.querySelector('.loading');
 
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        const interesesSeleccionados = document.querySelectorAll('.interes:checked');
-        const comunidadSeleccionada = document.querySelectorAll('.comunidad:checked');
-        
-        if (interesesSeleccionados.length === 0) {
-            alert('Por favor selecciona al menos un interés');
-            return;
-        }
-        
-        if (comunidadSeleccionada.length === 0) {
-            alert('Por favor selecciona al menos una característica de tu comunidad');
-            return;
-        }
-        
-        loading.style.display = 'block';
-        successMessage.classList.remove('show');
-        
-        const formData = new FormData(form);
-        const intereses = Array.from(interesesSeleccionados).map(el => el.value).join(', ');
-        const comunidad = Array.from(comunidadSeleccionada).map(el => el.value).join(', ');
-        
-        // Crear FormData con los datos
-        const params = new URLSearchParams();
-        params.append('nombre', formData.get('nombre'));
-        params.append('personalidad', formData.get('personalidad'));
-        params.append('energia', formData.get('energia'));
-        params.append('motivacion', formData.get('motivacion'));
-        params.append('smartfit', formData.get('smartfit'));
-        params.append('intereses', intereses);
-        params.append('entrenar', formData.get('entrenar'));
-        params.append('comunidad', comunidad);
-        params.append('timestamp', new Date().toLocaleString('es-MX'));
-        
-        fetch('https://script.google.com/macros/s/AKfycbxN9C1XNTQL0zM9EdbqtOj4y3GddxX778YjndIPDTVElskL4J3fVkezdSAnAnwiRAuU/exec', {
-            method: 'POST',
-            body: params
-        })
-        .then(response => {
-            loading.style.display = 'none';
-            successMessage.classList.add('show');
-            form.reset();
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
             
-            setTimeout(() => {
-                successMessage.scrollIntoView({ behavior: 'smooth' });
-            }, 300);
-        })
-        .catch(error => {
-            loading.style.display = 'none';
-            console.error('Error:', error);
-            successMessage.classList.add('show');
-            form.reset();
+            const interesesSeleccionados = document.querySelectorAll('.interes:checked');
+            const comunidadSeleccionada = document.querySelectorAll('.comunidad:checked');
+            
+            if (interesesSeleccionados.length === 0) {
+                alert('Por favor selecciona al menos un interés');
+                return;
+            }
+            
+            if (comunidadSeleccionada.length === 0) {
+                alert('Por favor selecciona al menos una característica de tu comunidad');
+                return;
+            }
+            
+            loading.style.display = 'block';
+            successMessage.classList.remove('show');
+            
+            const formData = new FormData(form);
+            const intereses = Array.from(interesesSeleccionados).map(el => el.value).join(', ');
+            const comunidad = Array.from(comunidadSeleccionada).map(el => el.value).join(', ');
+            
+            const url = 'https://script.google.com/macros/s/AKfycbxN9C1XNTQL0zM9EdbqtOj4y3GddxX778YjndIPDTVElskL4J3fVkezdSAnAnwiRAuU/exec?' +
+                'timestamp=' + encodeURIComponent(new Date().toLocaleString('es-MX')) +
+                '&nombre=' + encodeURIComponent(formData.get('nombre')) +
+                '&personalidad=' + encodeURIComponent(formData.get('personalidad')) +
+                '&energia=' + encodeURIComponent(formData.get('energia')) +
+                '&motivacion=' + encodeURIComponent(formData.get('motivacion')) +
+                '&smartfit=' + encodeURIComponent(formData.get('smartfit')) +
+                '&intereses=' + encodeURIComponent(intereses) +
+                '&entrenar=' + encodeURIComponent(formData.get('entrenar')) +
+                '&comunidad=' + encodeURIComponent(comunidad);
+            
+            fetch(url, {method: 'GET'})
+            .then(response => {
+                loading.style.display = 'none';
+                successMessage.classList.add('show');
+                form.reset();
+                
+                setTimeout(() => {
+                    successMessage.scrollIntoView({ behavior: 'smooth' });
+                }, 300);
+            })
+            .catch(error => {
+                loading.style.display = 'none';
+                console.log('Enviado:', error);
+                successMessage.classList.add('show');
+                form.reset();
+            });
         });
-    });
-</script>
+    </script>
+</body>
+</html>
